@@ -5,12 +5,20 @@ require 'optparse'
 
 #Luminance HDR をインストール、luminance-hdr-cliのPath設定が必要です。
 #動作環境 Win7/Mac Yosemite
+#Option -st set timer(s) / -b set brightness / -t set tonemap
 
 ThetaInitiator.open do |initiator|
-	inputs = ARGV.getopts('','b:-2000,0,2000','t:mantiuk08')
+	inputs = ARGV.getopts('','s:5','b:-2000,0,2000','t:mantiuk08')
 	brightness = inputs['b'].split(",")
 	brightness.map!(&:to_i)
-	tmo = inputs["t"]
+	tmo = inputs['t']
+	time = inputs['s'].to_i
+
+	if time > 0 then
+		puts "Timer Start! #{time} sec"
+		sleep time
+	end
+
 	current = Dir.pwd
 
 	brightness_num = brightness.length
@@ -55,10 +63,11 @@ ThetaInitiator.open do |initiator|
 			response = initiator.operation(:GetObject, [object_handles[i]]) do |data|
 				f.write data
 				a+=1
-				if a%100 == 0 then
-					print "."
+				if a%80 == 0 then
+					print ">"
 				end
 			end
+			print "|100|"
 			puts""
 			puts "#{i+1}/#{brightness_num} Saved (data_size : #{response[:data_size]} byte)"
 		end
