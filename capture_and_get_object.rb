@@ -21,6 +21,5 @@ ThetaInitiator.open do |initiator|
     f.write(response[:data].pack("C*"))
     puts "Saved! Check './theta_pic.jpg'"
   end
-
 end
 
